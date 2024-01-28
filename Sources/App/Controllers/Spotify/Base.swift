@@ -49,27 +49,39 @@ var clientId: String {
         try Environment.process.CLIENT_ID ?! ExporterError.noEnvVar
     }
 }
+
 var clientSecret: String {
     get throws {
         try Environment.process.CLIENT_SECRET ?! ExporterError.noEnvVar
     }
 }
+
 var refreshToken: String {
     get throws {
         try Environment.process.REFRESH_TOKEN ?! ExporterError.noEnvVar
     }
 }
 
+var redirectUrl: String {
+    get throws {
+        try Environment.process.REDIRECT_URL ?! ExporterError.noEnvVar
+    }
+}
+
 var accessToken: String = ""
 var tokenRefreshTime: Double = 0
+
+func updateRefreshToken(token: String) {
+    setenv("REFRESH_TOKEN", token, 1)
+}
 
 extension Client {
     private func headers(_ endpoint: Spotify.Endpoint) throws -> HTTPHeaders {
         switch endpoint {
         case .token:
-            return .init(
+            return try .init(
                 [
-                    ("Authorization", "Basic \(((try clientId) + ":" + (try clientSecret)).base64Url)")
+                    ("Authorization", "Basic \((clientId + ":" + clientSecret).base64Url)")
                 ]
             )
         default:
@@ -84,22 +96,24 @@ extension Client {
 
     @discardableResult
     func get(_ endpoint: Spotify.Endpoint, beforeSend: (inout ClientRequest) throws -> () = { _ in }) async throws -> ClientResponse {
-        try await self.get(URI(string: endpoint.url), headers: (try headers(endpoint)), beforeSend: beforeSend)
+        try await get(URI(string: endpoint.url), headers: headers(endpoint), beforeSend: beforeSend)
     }
+
     @discardableResult
     func post(_ endpoint: Spotify.Endpoint, beforeSend: (inout ClientRequest) throws -> () = { _ in }) async throws -> ClientResponse {
-        try await self.post(URI(string: endpoint.url), headers: (try headers(endpoint)), beforeSend: beforeSend)
+        try await post(URI(string: endpoint.url), headers: headers(endpoint), beforeSend: beforeSend)
     }
+
     @discardableResult
     func delete(_ endpoint: Spotify.Endpoint, beforeSend: (inout ClientRequest) throws -> () = { _ in }) async throws -> ClientResponse {
-        try await self.delete(URI(string: endpoint.url), headers: (try headers(endpoint)), beforeSend: beforeSend)
+        try await delete(URI(string: endpoint.url), headers: headers(endpoint), beforeSend: beforeSend)
     }
 }
 
 infix operator ?!: NilCoalescingPrecedence
 
 /// Throws the right hand side error if the left hand side optional is `nil`.
-func ?!<T>(value: T?, error: @autoclosure () -> Error) throws -> T {
+func ?! <T>(value: T?, error: @autoclosure () -> Error) throws -> T {
     guard let value = value else {
         throw error()
     }

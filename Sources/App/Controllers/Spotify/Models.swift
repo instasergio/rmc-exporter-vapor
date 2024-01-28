@@ -1,9 +1,11 @@
 struct TokenResponseModel: Codable {
+    let refreshToken: String?
     let accessToken, tokenType: String
     let expiresIn: Double
     let scope: String
 
     enum CodingKeys: String, CodingKey {
+        case refreshToken = "refresh_token"
         case accessToken = "access_token"
         case tokenType = "token_type"
         case expiresIn = "expires_in"
@@ -16,6 +18,7 @@ struct SearchResponseModel: Codable {
 }
 
 // MARK: - Tracks
+
 struct Tracks: Codable {
     let href: String?
     let items: [Item]?
@@ -27,6 +30,7 @@ struct Tracks: Codable {
 }
 
 // MARK: - Track
+
 struct Track: Codable {
     let album: Album?
     let artists: [AddedBy]?
@@ -65,6 +69,7 @@ struct Track: Codable {
 }
 
 // MARK: - AddedBy
+
 struct AddedBy: Codable {
     let externalUrls: ExternalUrls?
     let href: String?
@@ -77,6 +82,7 @@ struct AddedBy: Codable {
 }
 
 // MARK: - Item
+
 struct Item: Codable, Sendable {
     let album: Album?
     let artists: [Artist]?
@@ -114,6 +120,7 @@ struct Item: Codable, Sendable {
 }
 
 // MARK: - Album
+
 struct Album: Codable {
     let albumType: String?
     let artists: [Artist]?
@@ -140,6 +147,7 @@ struct Album: Codable {
 }
 
 // MARK: - Artist
+
 struct Artist: Codable {
     let externalUrls: ExternalUrls?
     let href: String?
@@ -152,11 +160,13 @@ struct Artist: Codable {
 }
 
 // MARK: - ExternalUrls
+
 struct ExternalUrls: Codable {
     let spotify: String?
 }
 
 // MARK: - Image
+
 struct Image: Codable {
     let height: Int?
     let url: String?
@@ -164,6 +174,7 @@ struct Image: Codable {
 }
 
 // MARK: - ExternalIds
+
 struct ExternalIds: Codable {
     let isrc: String?
 }
@@ -171,7 +182,6 @@ struct ExternalIds: Codable {
 // MARK: - Encode/decode helpers
 
 class JSONNull: Codable, Hashable {
-
     public static func == (lhs: JSONNull, rhs: JSONNull) -> Bool {
         return true
     }

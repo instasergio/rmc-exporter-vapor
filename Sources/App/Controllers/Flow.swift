@@ -21,8 +21,14 @@ final class Flow {
     func end() {
         task.cancel()
     }
-    var status: Bool {
-        !task.isCancelled
+    var status: String {
+        // TODO: Status service
+        if let refreshToken = try? refreshToken,
+           refreshToken.isEmpty{
+            return "Need Auth"
+        }
+
+        return task.isCancelled ? "Not running" : "Runnig"
     }
 
     private var task: Task<Void, Never> = Task {}
