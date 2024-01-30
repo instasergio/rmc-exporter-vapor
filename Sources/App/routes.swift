@@ -5,7 +5,7 @@ func routes(_ app: Application) throws {
         Flow.shared.status
     }
 
-    app.get("login") { req async throws in
+    app.get("login") { req async throws -> Response in
         let auth = SpotifyAuth(client: app.client, logger: app.logger)
         return try await auth.login(req: req)
     }
