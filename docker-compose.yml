@@ -13,14 +13,15 @@ services:
     environment:
       <<: *shared_environment
     ports:
-      - '8080:8080'
-    command:
-      [
-        "serve",
-        "--env",
-        "production",
-        "--hostname",
-        "0.0.0.0",
-        "--port",
-        "8080"
-      ]
+      - '80:8080'
+    restart: always
+    # command:
+    #   [
+    #     "serve",
+    #     "--env",
+    #     "production",
+    #     "--hostname",
+    #     "0.0.0.0",
+    #     "--port",
+    #     "8080"
+    #   ]

@@ -9,18 +9,24 @@ struct SpotifyAuth {
     let logger: Logger
 
     func login(req: Request) async throws -> Response {
+        logger.debug("🗿 Login")
         guard let code: String = try req.query.get(at: "code") else {
+            logger.debug("🗿 Login: No code, to Auth")
             return try await auth(req: req)
         }
 
+        logger.debug("🗿 Login: Code id \(code)")
         guard let state: String = try req.query.get(at: "state"),
               state == stateCheck
         else {
+            logger.debug("🗿 Login: invalid state check")
             throw URLError(.secureConnectionFailed)
         }
 
+        logger.debug("🗿 Login: requesting token with code")
         try await requestToken(code: code)
 
+        logger.debug("🗿 Login: response Done")
         let response = Response(
             body: .init(string: "Done")
         )
@@ -70,6 +76,8 @@ struct SpotifyAuth {
         }
 
         logger.debug("✍️ Auth: redirecting to Spotify")
+        logger.debug("✍️ Auth: url - \(url)")
+        
         return req.redirect(to: url)
     }
 }

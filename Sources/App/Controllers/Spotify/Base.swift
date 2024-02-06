@@ -39,32 +39,35 @@ struct Spotify {
 }
 
 enum ExporterError: Error {
-    case noEnvVar
+    case noClientId
+    case noClientSecret
+    case noRefreshToken
+    case noRedirectUrl
     case trackNotFound
     case noTrackOnRadio
 }
 
 var clientId: String {
     get throws {
-        try Environment.process.CLIENT_ID ?! ExporterError.noEnvVar
+        try Environment.process.CLIENT_ID ?! ExporterError.noClientId
     }
 }
 
 var clientSecret: String {
     get throws {
-        try Environment.process.CLIENT_SECRET ?! ExporterError.noEnvVar
+        try Environment.process.CLIENT_SECRET ?! ExporterError.noClientSecret
     }
 }
 
 var refreshToken: String {
     get throws {
-        try Environment.process.REFRESH_TOKEN ?! ExporterError.noEnvVar
+        try Environment.process.REFRESH_TOKEN ?! ExporterError.noRefreshToken
     }
 }
 
 var redirectUrl: String {
     get throws {
-        try Environment.process.REDIRECT_URL ?! ExporterError.noEnvVar
+        try Environment.process.REDIRECT_URL ?! ExporterError.noRedirectUrl
     }
 }
 
