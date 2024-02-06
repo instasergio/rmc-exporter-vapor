@@ -26,4 +26,4 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: rmc-exporter:$(date +%s)
+          tags: rmc-exporter:latest
