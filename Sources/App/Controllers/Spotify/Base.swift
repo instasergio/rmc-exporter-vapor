@@ -26,13 +26,13 @@ struct Spotify {
         var url: String {
             switch self {
             case .currentTrackName:
-                return "http://94.140.192.162:23347/site/broad.txt"
+                "http://94.140.192.162:23347/site/broad.txt"
             case .token:
-                return "https://accounts.spotify.com/api/token"
+                "https://accounts.spotify.com/api/token"
             case .search:
-                return "https://api.spotify.com/v1/search"
+                "https://api.spotify.com/v1/search"
             case let .playlist(playlist):
-                return "https://api.spotify.com/v1/playlists/\(playlist.rawValue)/tracks"
+                "https://api.spotify.com/v1/playlists/\(playlist.rawValue)/tracks"
             }
         }
     }

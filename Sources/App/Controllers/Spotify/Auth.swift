@@ -65,15 +65,16 @@ struct SpotifyAuth {
             URLQueryItem(name: "response_type", value: "code")
             URLQueryItem(name: "client_id", value: clientId)
             URLQueryItem(name: "scope", value: "playlist-modify-public playlist-read-private")
-            URLQueryItem(name: "redirect_uri", value: redirectUrl)
+//            URLQueryItem(name: "redirect_uri", value: redirectUrl)
             URLQueryItem(name: "state", value: stateCheck)
         }
 
         components?.queryItems = queryItems
 
-        guard let url = components?.string else {
+        guard var url = components?.string else {
             fatalError("Invalid URL components")
         }
+        url.append("&redirect_uri=\(redirectUrl)")
 
         logger.debug("✍️ Auth: redirecting to Spotify")
         logger.debug("✍️ Auth: url - \(url)")
