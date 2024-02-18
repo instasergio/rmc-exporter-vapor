@@ -48,8 +48,6 @@ struct SpotifyAuth {
 
         let model = try response.content.decode(TokenResponseModel.self)
         if let refreshToken = model.refreshToken {
-            logger.debug("🤡 refresh token: \(refreshToken)")
-
             updateRefreshToken(token: refreshToken)
         }
         accessToken = model.accessToken

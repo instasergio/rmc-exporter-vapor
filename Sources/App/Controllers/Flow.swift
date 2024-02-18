@@ -23,11 +23,6 @@ final class Flow {
     }
     var status: String {
         // TODO: Status service
-        if let refreshToken = try? refreshToken,
-           refreshToken.isEmpty {
-            return "Need Auth"
-        }
-
         return task.isCancelled ? "Not running" : "Runnig"
     }
 
