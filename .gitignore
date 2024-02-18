@@ -99,3 +99,4 @@ db.sqlite
 .swiftpm
 .env
 .vscode
+.secrets

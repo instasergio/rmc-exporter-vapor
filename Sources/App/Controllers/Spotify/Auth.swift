@@ -64,7 +64,7 @@ struct SpotifyAuth {
         let queryItems: [URLQueryItem] = .build {
             URLQueryItem(name: "response_type", value: "code")
             URLQueryItem(name: "client_id", value: clientId)
-            URLQueryItem(name: "scope", value: "playlist-read-private playlist-modify-public playlist-read-private")
+            URLQueryItem(name: "scope", value: "playlist-modify-public playlist-read-private")
             URLQueryItem(name: "redirect_uri", value: redirectUrl)
             URLQueryItem(name: "state", value: stateCheck)
         }

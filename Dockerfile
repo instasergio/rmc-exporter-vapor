@@ -23,6 +23,10 @@ RUN swift package resolve --skip-update \
 # Copy entire repo into container
 COPY . .
 
+# Copy certs
+COPY ./secrets/fullchain.pem /build/secrets/fullchain.pem
+COPY ./secrets/privkey.pem /build/secrets/privkey.pem
+
 # Build everything, with optimizations, with static linking, and using jemalloc
 # N.B.: The static version of jemalloc is incompatible with the static Swift runtime.
 RUN swift build -c release \
@@ -73,6 +77,10 @@ WORKDIR /app
 
 # Copy built executable and any staged resources from builder
 COPY --from=build --chown=vapor:vapor /staging /app
+
+# Copy certs
+COPY --from=build --chown=vapor:vapor /build/secrets/fullchain.pem /app/secrets/fullchain.pem
+COPY --from=build --chown=vapor:vapor /build/secrets/privkey.pem /app/secrets/privkey.pem
 
 # Provide configuration needed by the built-in crash reporter and some sensible default behaviors.
 ENV SWIFT_BACKTRACE=enable=yes,sanitize=yes,threads=all,images=all,interactive=no,swift-backtrace=./swift-backtrace-static
