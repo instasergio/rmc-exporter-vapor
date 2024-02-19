@@ -1,7 +1,6 @@
 name: Pull, tag and push to Ya Cloud
 
-on:
-  workflow_call:
+on: workflow_dispatch
 
 jobs:
   ya-cloud:
