@@ -38,6 +38,6 @@ jobs:
         env:
           KEY_JSON: ${{ secrets.KEY_JSON }}
           REGISTRY_ID: ${{ secrets.REGISTRY_ID }}
-          DOCKERFILE_PATH: .
+          DOCKERFILE_PATH: ./Dockerfile
           IMAGE_NAME: rmc-exporter
           IMAGE_TAG: latest
