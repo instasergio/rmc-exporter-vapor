@@ -33,11 +33,21 @@ jobs:
         with:
           url: '${{ secrets.DEPLOY_WEBHOOK }}'
           method: 'GET'
+      - 
+        name: Login to Yandex Cloud Container Registry
+        id: login-cr
+        uses: yc-actions/yc-cr-login@v1
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
       -
-        uses: raisultan/ycr-push@main
+        name: Pull, tag, and push image to Yandex Cloud Container Registry
         env:
-          KEY_JSON: ${{ secrets.KEY_JSON }}
-          REGISTRY_ID: ${{ secrets.REGISTRY_ID }}
-          DOCKERFILE_PATH: ./Dockerfile
-          IMAGE_NAME: rmc-exporter
+          CR_REGISTRY: ${{ secrets.REGISTRY_ID }}
+          CR_REPOSITORY: rmc-exporter
           IMAGE_TAG: latest
+        run: |
+          docker pull rmc-exporter:latest
+          docker tag rmc-exporter:latest cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
+          docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
+
+
