@@ -1,9 +1,9 @@
-name: Pull, tag and push to Ya Cloud
+name: Ya Cloud push and deploy
 
 on: workflow_dispatch
 
 jobs:
-  ya-cloud:
+  push-and-deploy:
     runs-on: ubuntu-latest
     steps:
       -
@@ -23,8 +23,19 @@ jobs:
         env: 
           CR_REGISTRY: ${{ secrets.REGISTRY_ID }}
           CR_REPOSITORY: rmc-exporter
-          IMAGE_TAG: latest
+          IMAGE_TAG: ${{ github.sha }}
         run: |
           docker pull instasergio/rmc-exporter:latest
           docker tag instasergio/rmc-exporter:latest cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
           docker push cr.yandex/$CR_REGISTRY/$CR_REPOSITORY:$IMAGE_TAG
+      - 
+        name: Deploy Serverless Container
+        id: deploy-sls-container
+        uses: yc-actions/yc-sls-container-deploy@v2
+        with:
+          yc-sa-json-credentials: ${{ secrets.YC_SA_JSON_CREDENTIALS }}
+          container-name: rmc-exporter
+          folder-id: ${{ secrets.YC_FOLDER_ID }}
+          public: true
+          revision-service-account-id: ${{ secrets.YC_SERVICE_ACCOUNT_ID }}
+          revision-image-url: cr.yandex/${{ secrets.REGISTRY_ID }}/rmc-exporter:${{ github.sha }}
