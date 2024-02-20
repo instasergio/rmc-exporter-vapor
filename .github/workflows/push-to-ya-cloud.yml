@@ -37,5 +37,6 @@ jobs:
           container-name: rmc-exporter
           folder-id: ${{ secrets.YC_FOLDER_ID }}
           public: true
+          revision-env: ${{ secrets.YC_ENV }}
           revision-service-account-id: ${{ secrets.YC_SERVICE_ACCOUNT_ID }}
           revision-image-url: cr.yandex/${{ secrets.REGISTRY_ID }}/rmc-exporter:${{ github.sha }}
