@@ -61,7 +61,19 @@ var clientSecret: String {
 
 var refreshToken: String {
     get throws {
-        try Environment.process.REFRESH_TOKEN ?! ExporterError.noRefreshToken
+        if let token = Environment.process.REFRESH_TOKEN {
+            return token
+        }
+
+        let tokenPath = Environment.process.REFRESH_TOKEN_PATH ?? "/data/refresh_token"
+        if let data = FileManager.default.contents(atPath: tokenPath),
+           let token = String(data: data, encoding: .utf8)?
+            .trimmingCharacters(in: .whitespacesAndNewlines),
+           !token.isEmpty {
+            return token
+        }
+
+        throw ExporterError.noRefreshToken
     }
 }
 
@@ -76,6 +88,9 @@ var tokenRefreshTime: Double = 0
 
 func updateRefreshToken(token: String) {
     setenv("REFRESH_TOKEN", token, 1)
+    let tokenPath = Environment.process.REFRESH_TOKEN_PATH ?? "/data/refresh_token"
+    let data = Data(token.utf8)
+    try? data.write(to: URL(fileURLWithPath: tokenPath), options: [.atomic])
 }
 
 extension Client {

@@ -5,6 +5,7 @@ x-shared_environment: &shared_environment
   CLIENT_ID: ${CLIENT_ID}
   CLIENT_SECRET: ${CLIENT_SECRET}
   REDIRECT_URL: ${REDIRECT_URL}
+  REFRESH_TOKEN_PATH: ${REFRESH_TOKEN_PATH:-/data/refresh_token}
 
 services:
   app:
@@ -12,6 +13,8 @@ services:
       context: .
     environment:
       <<: *shared_environment
+    volumes:
+      - rmc_data:/data
     ports:
       - '80:8080'
     restart: always
@@ -25,3 +28,6 @@ services:
     #     "--port",
     #     "8080"
     #   ]
+
+volumes:
+  rmc_data:
