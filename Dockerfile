@@ -91,7 +91,7 @@ USER vapor:vapor
 # Let Docker bind to port 8080
 EXPOSE 8080
 
-# Start the Vapor service when the image is run, default to listening on 8080 in production environment
-ENTRYPOINT ["./Run"]
-# Render injects $PORT; exec via shell so env var expansion works.
-CMD ["sh", "-lc", "./Run serve --env production --hostname 0.0.0.0 --port ${PORT:-8080}"]
+# Start the Vapor service when the image is run.
+# Use a shell entrypoint so ${PORT} expands (Render injects it). Locally it falls back to 8080.
+ENTRYPOINT ["sh", "-lc"]
+CMD ["./Run serve --env production --hostname 0.0.0.0 --port ${PORT:-8080}"]
