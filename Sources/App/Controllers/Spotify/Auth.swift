@@ -45,6 +45,7 @@ struct SpotifyAuth {
                 "redirect_uri": redirectUrl
             ], as: .urlEncodedForm)
         }
+        try response.requireSuccess(context: "spotify.token.authorization_code")
 
         let model = try response.content.decode(TokenResponseModel.self)
         if let refreshToken = model.refreshToken {
@@ -96,6 +97,7 @@ extension Spotify {
                 "refresh_token": refreshToken
             ], as: .urlEncodedForm)
         }
+        try response.requireSuccess(context: "spotify.token.refresh")
 
         let model = try response.content.decode(TokenResponseModel.self)
         accessToken = model.accessToken

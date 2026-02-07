@@ -17,6 +17,19 @@ struct SearchResponseModel: Codable {
     let tracks: Tracks
 }
 
+// MARK: - Spotify Error
+
+/// Spotify Web API error envelope:
+/// `{ "error": { "status": 401, "message": "..." } }`
+struct SpotifyErrorEnvelope: Codable {
+    let error: SpotifyErrorObject
+}
+
+struct SpotifyErrorObject: Codable {
+    let status: Int?
+    let message: String?
+}
+
 // MARK: - Tracks
 
 struct Tracks: Codable {

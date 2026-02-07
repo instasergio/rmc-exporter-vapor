@@ -1,5 +1,6 @@
 import Foundation
 import Vapor
+import NIOCore
 
 struct Spotify {
     let client: Client
@@ -45,6 +46,8 @@ enum ExporterError: Error {
     case noRedirectUrl
     case trackNotFound
     case noTrackOnRadio
+    case spotifyApiError(context: String, status: Int?, message: String?)
+    case spotifyHttpError(context: String, status: Int, body: String?)
 }
 
 var clientId: String {
@@ -125,6 +128,35 @@ extension Client {
     @discardableResult
     func delete(_ endpoint: Spotify.Endpoint, beforeSend: (inout ClientRequest) throws -> () = { _ in }) async throws -> ClientResponse {
         try await delete(URI(string: endpoint.url), headers: headers(endpoint), beforeSend: beforeSend)
+    }
+}
+
+extension ClientResponse {
+    /// Best-effort response body for diagnostics. Avoid logging huge payloads.
+    func bodyString(limit: Int = 4096) -> String? {
+        guard let body else { return nil }
+        let length = min(body.readableBytes, limit)
+        return body.getString(at: body.readerIndex, length: length)
+    }
+
+    func requireSuccess(context: String) throws {
+        guard status.code >= 200, status.code < 300 else {
+            if let data = bodyString()?.data(using: .utf8),
+               let envelope = try? JSONDecoder().decode(SpotifyErrorEnvelope.self, from: data)
+            {
+                throw ExporterError.spotifyApiError(
+                    context: context,
+                    status: envelope.error.status,
+                    message: envelope.error.message
+                )
+            }
+
+            throw ExporterError.spotifyHttpError(
+                context: context,
+                status: Int(status.code),
+                body: bodyString()
+            )
+        }
     }
 }
 

@@ -1,0 +1,21 @@
+x-shared_environment: &shared_environment
+  LOG_LEVEL: ${LOG_LEVEL:-debug}
+  CLIENT_ID: ${CLIENT_ID}
+  CLIENT_SECRET: ${CLIENT_SECRET}
+  REDIRECT_URL: ${REDIRECT_URL}
+  REFRESH_TOKEN_PATH: ${REFRESH_TOKEN_PATH:-/data/refresh_token}
+
+services:
+  app:
+    image: ${IMAGE:-instasergio/rmc-exporter-vapor:latest}
+    environment:
+      <<: *shared_environment
+    volumes:
+      - rmc_data:/data
+    ports:
+      - '${HOST_PORT:-4357}:8080'
+    restart: always
+
+volumes:
+  rmc_data:
+
